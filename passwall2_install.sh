@@ -163,7 +163,7 @@ fi
 
 cd /tmp
 
-wget -q https://amir3.space/passwall_patch.zip
+wget -q https://github.com/drova326/nanopi/blob/main/passwall_patch.zip
 
 unzip -o passwall_patch.zip -d /
 
