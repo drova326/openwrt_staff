@@ -102,7 +102,6 @@ echo -e "${GREEN} Passwall.2 Installed Successfully ! ${NC}"
 
 fi
 
-
 DNS=`ls /usr/lib/opkg/info/dnsmasq-full.control`
 
 if [ "$DNS" == "/usr/lib/opkg/info/dnsmasq-full.control" ]; then
@@ -168,12 +167,88 @@ uci set passwall2.@global[0].remote_dns='8.8.4.4'
 
 uci set passwall2.Direct=shunt_rules
 uci set passwall2.Direct.network='tcp,udp'
-uci set passwall2.Direct.remarks='RUSSIA'
+uci set passwall2.Direct.remarks='Russia'
 uci set passwall2.Direct.ip_list='0.0.0.0/8
 10.0.0.0/8
 geoip:ru'
-uci set passwall2.Direct.domain_list='regexp:^.+\.ru$
-geosite:category-ru'
+uci set passwall2.Direct.domain_list='regexp:\\.(ru|xn--p1ai|su)$
+ivi.ru
+www.ivi.ru
+ivimusic.ivi.ru
+hd.ivi.ru
+okko.tv
+okko.pro
+okko.media
+kinopoisk.ru
+hd.kinopoisk.ru
+btvkino.ru
+megogo.net
+more.tv
+premier.one
+start.ru
+tvzavr.ru
+ivi.tv
+ivicdn.net
+mediastreaming.ru
+stream.ivi.ru
+tv.ivi.ru
+tv.onlinetv.ru
+server.okko.tv
+vod.okko.tv
+
+gosuslugi.ru
+esia.gosuslugi.ru
+mos.ru
+nalog.gov.ru
+service.nalog.gov.ru
+rosreestr.gov.ru
+mvd.ru
+fssprus.ru
+pfr.gov.ru
+rosstat.gov.ru
+med.gov.ru
+rkn.gov.ru
+sberbank.ru
+online.sberbank.ru
+id.sberbank.ru
+tinkoff.ru
+id.tinkoff.ru
+vtb.ru
+online.vtb.ru
+alfabank.ru
+online.alfabank.ru
+gazprombank.ru
+gpb.ru
+psbank.ru
+rshb.ru
+mkk1.ru
+qiwi.ru
+yoomoney.ru
+webmoney.ru
+rosbank.ru
+otpbank.ru
+yandex.money.ru
+mts.ru
+my.mts.ru
+beeline.ru
+lk.beeline.ru
+tele2.ru
+lk.tele2.ru
+megafon.ru
+lk.megafon.ru
+yandex.ru
+mail.yandex.ru
+passport.yandex.ru
+bank.yandex.ru
+market.yandex.ru
+zen.yandex.ru
+kinopoisk.yandex.ru
+vk.com
+vk.me
+vkontakte.ru
+ok.ru
+mail.ru
+rutube.ru'
 
 uci set passwall2.myshunt.Direct='_direct'
 
@@ -183,6 +258,6 @@ uci commit system
 
 uci commit
 
-echo -e "${YELLOW}** Installation Completed ** ${ENDCOLOR}"
+echo -e "${YELLOW}** Installation Completed ** ${NC}"
 
 /sbin/reload_config
