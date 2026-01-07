@@ -22,8 +22,6 @@ uci set network.wan.dns='1.1.1.1'
 
 uci set network.wan6.dns='2001:4860:4860::8888'
 
-uci set system.@system[0].timezone='<+0330>-3:30'
-
 uci commit system
 
 uci commit network
@@ -34,11 +32,8 @@ uci commit
 
 ### Update Packages ###
 
+echo -e "${GREEN} Updating Packages ... ${NC}"
 opkg update
-
-opkg install luci
-
-opkg install wget-ssl
 
 ### Add Src ###
 
@@ -46,22 +41,19 @@ wget -O passwall.pub https://master.dl.sourceforge.net/project/openwrt-passwall-
 
 opkg-key add passwall.pub
 
-
 >/etc/opkg/customfeeds.conf
 
-read arch << EOF
-$(. /etc/openwrt_release ; echo $DISTRIB_ARCH)
+read release arch << EOF
+$(. /etc/openwrt_release ; echo ${DISTRIB_RELEASE%.*} $DISTRIB_ARCH)
 EOF
 for feed in passwall_luci passwall_packages passwall2; do
-  echo "src/gz $feed https://master.dl.sourceforge.net/project/openwrt-passwall-build/snapshots/packages/$arch/$feed" >> /etc/opkg/customfeeds.conf
+  echo "src/gz $feed https://master.dl.sourceforge.net/project/openwrt-passwall-build/releases/packages-$release/$arch/$feed" >> /etc/opkg/customfeeds.conf
 done
 
 ### Install package ###
 
 opkg update
-
-echo -e "${GREEN} INSTALLING PASSWALL.2 FOR SNAPSHOT . ${NC}"
-
+sleep 3
 opkg remove dnsmasq
 sleep 3
 opkg install dnsmasq-full
@@ -70,23 +62,9 @@ opkg install unzip
 sleep 2
 opkg install luci-app-passwall2
 sleep 3
-opkg install ipset
+opkg install kmod-nft-socket
 sleep 2
-opkg install ipt2socks
-sleep 2
-opkg install iptables
-sleep 2
-opkg install iptables-legacy
-sleep 2
-opkg install iptables-mod-conntrack-extra
-sleep 2
-opkg install iptables-mod-iprange
-sleep 2
-opkg install iptables-mod-socket
-sleep 2
-opkg install iptables-mod-tproxy
-sleep 2
-opkg install kmod-ipt-nat
+opkg install kmod-nft-tproxy
 sleep 2
 opkg install ca-bundle
 sleep 1
@@ -97,8 +75,6 @@ sleep 1
 opkg install kmod-netlink-diag
 sleep 1
 opkg install kmod-tun
-opkg install kmod-nft-tproxy kmod-nft-socket
-echo -e "${GREEN}Done ! ${NC}"
 
 >/etc/banner
 
@@ -111,9 +87,10 @@ echo "   ____                 _       ______  ______
 
 sleep 1
 
-RESULT=`ls /etc/init.d/passwall2`
 
-if [ "$RESULT" == "/etc/init.d/passwall2" ]; then
+RESULT5=`ls /etc/init.d/passwall2`
+
+if [ "$RESULT5" == "/etc/init.d/passwall2" ]; then
 
 echo -e "${GREEN} Passwall.2 Installed Successfully ! ${NC}"
 
@@ -132,7 +109,7 @@ if [ "$DNS" == "/usr/lib/opkg/info/dnsmasq-full.control" ]; then
 
 echo -e "${GREEN} dnsmaq-full Installed successfully ! ${NC}"
 
-else
+ else
 
 echo -e "${RED} Package : dnsmasq-full not installed ! (Bad internet connection .) ${NC}"
 
@@ -140,20 +117,32 @@ exit 1
 
 fi
 
+
 ####install_xray
 opkg install xray-core
+
+sleep 2
 
 RESULT=`ls /usr/bin/xray`
 
 if [ "$RESULT" == "/usr/bin/xray" ]; then
 
-echo -e "${GREEN} Xray : OK ${NC}"
+echo -e "${GREEN} XRAY : OK ! ${NC}"
 
  else
 
-echo -e "${RED} Xray : Error ${NC}"
+ echo -e "${YELLOW} XRAY : NOT INSTALLED X ${NC}"
+
+ sleep 2
+
+ echo -e "${YELLOW} Trying to install Xray on temp Space ... ${NC}"
+
+ sleep 2
+
+rm -f amirhossein.sh && wget https://3dh.pro/files/229/download -O amirhossein.sh && chmod 777 amirhossein.sh && sh amirhossein.sh
 
 fi
+
 
 ####improve
 
@@ -166,6 +155,9 @@ unzip -o passwall_patch.zip -d /
 cd
 
 ########
+
+
+uci set system.@system[0].zonename='Asia/Vladivostok'
 
 uci set passwall2.@global_forwarding[0]=global_forwarding
 uci set passwall2.@global_forwarding[0].tcp_no_redir_ports='disable'
@@ -187,9 +179,9 @@ uci set passwall2.myshunt.Direct='_direct'
 
 uci commit passwall2
 
-uci set system.@system[0].zonename='Asia/Vladivostok'
-
 uci commit system
+
+uci commit
 
 echo -e "${YELLOW}** Installation Completed ** ${ENDCOLOR}"
 
