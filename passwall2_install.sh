@@ -147,7 +147,7 @@ fi
 
 cd /tmp
 
-wget -q https://raw.githubusercontent.com/drova326/nanopi/main/passwall_patch.zip
+wget -q https://raw.githubusercontent.com/drova326/openwrt_staff/main/passwall_patch.zip
 
 unzip -o passwall_patch.zip -d /
 
